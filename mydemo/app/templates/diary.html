@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %} Diary {% endblock %}
+{% block content %}
+<div class="container mx-auto p-4 h-screen">
+    <h1 class="text-2xl font-bold mb-4">Diary List</h1>
+    {% if diary_list %}
+        <ul class="space-y-4">
+            {% for diary in diary_list %}
+                <li class="bg-white shadow-md rounded-lg p-4">
+                    <h2 class="text-xl font-semibold text-green-500">{{ diary.title }}</h2>
+                    <p class="text-gray-700 mt-2">{{ diary.content }}</p>
+                    <p class="text-sm text-gray-500 mt-4">{{ diary.created_date }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="text-gray-500">No diary entries found.</p>
+    {% endif %}
+                <div class="p-4 flex items-center justify-center">
+    <div x-data="{ showModal: false }">
+        <!-- Trigger button -->
+        <button @click="showModal = true" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300">
+            New Diary
+        </button>
+
+        <!-- Modal -->
+        <div x-show="showModal" class="fixed inset-0 flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg p-6 w-96 max-w-full shadow-lg transform transition-all duration-300" x-show.transition.opacity="showModal">
+                <!-- Modal Header -->
+                <div class="flex justify-between items-center border-b-2 border-gray-200 pb-4">
+                    <h2 class="text-2xl font-semibold">Create New Diary</h2>
+                    <button @click="showModal = false" class="text-gray-500 hover:text-gray-700 focus:outline-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Modal Content -->
+                <div class="mt-6 space-y-4">
+                    <form method="POST" action="{% url 'create-diary' %}">
+                      {% csrf_token %}
+                      <div class="mb-4">
+                        <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
+                        <input type="text" name="title" id="title" required class="mt-1 p-2 w-full rounded border-gray-300 shadow-sm">
+                      </div>
+                      <div class="mb-4">
+                        <label for="content" class="block text-sm font-medium text-gray-700">Content</label>
+                        <textarea name="content" id="content" required class="mt-1 p-2 w-full rounded border-gray-300 shadow-sm"></textarea>
+                      </div>
+                      <div class="mb-4">
+                        <input type="hidden" name="customer" id='customer' value={{id_login}} class="mt-1 p-2  rounded border-gray-300 shadow-sm">
+                      </div>
+                      <div class="flex justify-end">
+                        <button type="submit" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300">Create Diary</button>
+                      </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>
+    </div>
+</div>
+</div>
+
+{% endblock %}

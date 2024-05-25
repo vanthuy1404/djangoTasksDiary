@@ -1,0 +1,65 @@
+<!-- login.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log In</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+    <div class="max-w-md w-full bg-white rounded-lg shadow-md p-8">
+        <h2 class="text-2xl font-bold text-center text-gray-900 mb-6">Log In</h2>
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            <div>
+                <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+                <input type="text" id="username" name="username" autocomplete="username"
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+            </div>
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                <input type="password" id="password" name="password" autocomplete="current-password"
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+            </div>
+            <div>
+                <button type="submit" class=" mb-5 w-full py-2 px-4 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded focus:outline-none focus:shadow-outline">
+                    Log In
+                </button>
+                <div class="text-center">
+                    <a href="{% url 'sign-up' %}" class="text-blue-500 hover:text-blue-700">
+                        Don't have an account? Sign up
+                    </a>
+                </div>
+                {% if messages %}
+                <div class="mb-2 mt-2" id="message-container">
+                    {% for message in messages %}
+                        <div class="p-4 mb-4 text-sm text-white rounded-lg {% if message.tags %}bg-green-400{% else %}bg-red-500{% endif %}" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+{% endif %}
+            </div>
+        </form>
+    </div>
+    <script>
+        // Wait for the DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', function () {
+            // Find the message container
+            const messageContainer = document.getElementById('message-container');
+            if (messageContainer) {
+                // Set a timeout to fade out the messages after 3 seconds
+                setTimeout(function () {
+                    messageContainer.classList.add('fade-out');
+                    // Remove the message container after the fade-out transition
+                    setTimeout(function () {
+                        messageContainer.remove();
+                    }, 1000); // Match this time with the CSS transition duration
+                }, 3000); // 3 seconds before starting the fade-out
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% block title %}Tasks{% endblock %}
+{% block content %}
+  <div class="flex ">
+    <!-- Sidebar -->
+    <div class="w-1/4  p-4 h-screen">
+      <ul>
+        <li><a id="tasks-tab" class="block p-2 rounded mt-2 text-white" onclick="showContent('tasks')">Today</a></li>
+        <li><a id="diary-tab" class="block p-2 rounded mt-2 text-gray-500" onclick="showContent('diary')">History</a></li>
+        <li><a class="block p-2 rounded mt-2 text-black-500">Wellcome {{username}}!</a></li>
+      </ul>
+    </div>
+    <!-- Content -->
+    <div class="w-3/4 p-4">
+      <div id="tasks">
+        <h1 class="text-2xl font-bold mb-4">Tasks List</h1>
+        <div class="container mx-auto py-8">
+        <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-2">
+            {% if tasks_list and id_login %}
+                <ul>
+                    {% for task in tasks_list %}
+                        {%if task.customer == id_login%}
+                          <li class="mb-4 p-4 border-b">
+                            <h2 class="text-xl font-semibold">{{ task.title }}</h2>
+                            <p class="text-gray-700">{{ task.description }}</p>
+                            <p class="text-sm text-gray-500">Created on: {{ task.created_date }}</p>
+                            <div class="flex">
+                                <form action="/change-completed/" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="id" value="{{ task.id }}">
+                                <button type="submit" class="inline-block px-4 py-2 rounded mt-2
+                                    {% if task.isCompleted %}
+                                        bg-green-500 text-white">Completed
+                                    {% else %}
+                                        bg-red-500 text-white">Not Completed
+                                    {% endif %}
+                                </button>
+                            </form>
+                            <form action="/delete-task/" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="delete_id" value="{{ task.id }}">
+                                <button type="submit" class="inline-block px-4 py-2 rounded mt-2 bg-red-500 text-white mx-2">
+                                    Delete Task
+                                </button>
+                            </form>
+                            </div>
+                          </li>
+                          {% endif %}
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-gray-700">No tasks available.</p>
+            {% endif %}
+        </div>
+            <div class="p-4 flex items-center justify-center">
+    <div x-data="{ showModal: false }">
+        <!-- Trigger button -->
+        <button @click="showModal = true" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300">
+            New Task
+        </button>
+
+        <!-- Modal -->
+        <div x-show="showModal" class="fixed inset-0 flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg p-6 w-96 max-w-full shadow-lg transform transition-all duration-300" x-show.transition.opacity="showModal">
+                <!-- Modal Header -->
+                <div class="flex justify-between items-center border-b-2 border-gray-200 pb-4">
+                    <h2 class="text-2xl font-semibold">Create New Task</h2>
+                    <button @click="showModal = false" class="text-gray-500 hover:text-gray-700 focus:outline-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Modal Content -->
+                <div class="mt-6 space-y-4">
+                    <form method="POST" action="{% url 'create-task' %}">
+                      {% csrf_token %}
+                      <div class="mb-4">
+                        <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
+                        <input type="text" name="title" id="title" required class="mt-1 p-2 w-full rounded border-gray-300 shadow-sm">
+                      </div>
+                      <div class="mb-4">
+                        <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                        <textarea name="description" id="description" required class="mt-1 p-2 w-full rounded border-gray-300 shadow-sm"></textarea>
+                      </div>
+                      <div class="mb-4">
+                        <label for="isCompleted" class="block text-sm font-medium text-gray-700">Completed?</label>
+                        <input type="checkbox" name="isCompleted" id='isCompleted'  class="mt-1 p-2  rounded border-gray-300 shadow-sm">
+                      </div>
+                      <div class="mb-4">
+                        <input type="hidden" name="customer" id='customer' value={{id_login}} class="mt-1 p-2  rounded border-gray-300 shadow-sm">
+                      </div>
+                      <div class="flex justify-end">
+                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300">Create Task</button>
+                      </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>
+    </div>
+      </div>
+      <div id="diary" class="hidden">
+        <h1 class="text-2xl font-bold mb-4">History Tasks</h1>
+        <div class="container mx-auto py-8">
+          <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-2">
+            {% if history_list and id_login%}
+              <ul>
+                {% for history in history_list %}
+                  <li class="mb-4 p-4 border-b">
+                    <h2 class="text-xl font-semibold text-green-500">Date: {{ history.date }}</h2>
+                    <ul>
+                      {% for task in history.value %}
+                        {%if task.customer == id_login%}
+                        <li class="mb-4 p-4 border-b">
+                          <h3 class="text-lg font-semibold">{{ task.title }}</h3>
+                          <p class="text-gray-700">{{ task.description }}</p>
+                          <p class="text-sm text-gray-500">Created on: {{ task.created_date }}</p>
+                          <p class="text-sm text-gray-500">
+                            Status:
+                            {% if task.isCompleted %}
+                              <span class="text-green-500">Completed</span>
+                            {% else %}
+                              <span class="text-red-500">Not Completed</span>
+            
+                        {% endif %}
+                          </p>
+                        </li>
+                        {%endif%}
+                      {% endfor %}
+                    </ul>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <p class="text-gray-700">No history available.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

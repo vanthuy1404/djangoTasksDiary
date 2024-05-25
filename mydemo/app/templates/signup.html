@@ -1,0 +1,62 @@
+<!-- signup.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+    {% if messages %}
+  <div class="mb-2 mt-2" id="message-container">
+      {% for message in messages %}
+          <div class="p-4 mb-4 text-sm text-white rounded-lg {% if message.tags %}bg-green-400{% else %}bg-red-500{% endif %}" role="alert">
+              {{ message }}
+          </div>
+      {% endfor %}
+  </div>
+{% endif %}
+    <div class="max-w-md w-full bg-white rounded-lg shadow-md p-8">
+        <h2 class="text-2xl font-bold text-center text-gray-900 mb-6">Sign Up</h2>
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            <div>
+                <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+                <input type="text" id="username" name="username" autocomplete="username"
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+            </div>
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
+                <input type="email" id="email" name="email" autocomplete="email"
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+            </div>
+            <div>
+                <label for="address" class="block text-sm font-medium text-gray-700">Address</label>
+                <input type="text" id="address" name="address" autocomplete="address"
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+            </div>
+            <div>
+                <label for="password1" class="block text-sm font-medium text-gray-700">Password</label>
+                <input type="password" id="password1" name="password1" autocomplete="new-password"
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+            </div>
+            <div>
+                <label for="password2" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+                <input type="password" id="password2" name="password2" autocomplete="new-password"
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+            </div>
+            <div>
+                <button type="submit" class="w-full py-2 px-4 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded focus:outline-none focus:shadow-outline">
+                    Sign Up
+                </button>
+            </div>
+            <div class="text-center">
+                <a href="{% url 'login' %}" class="text-blue-500 hover:text-blue-700">
+                    Have an account? Login
+                </a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
